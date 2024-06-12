@@ -1,2 +1,2 @@
-package com.example.tugasinfiniteadvance.ui.screens.splash
+package  com.example.tugasinfiniteadvance.ui.screens.splash
 
