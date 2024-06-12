@@ -35,7 +35,7 @@ import com.example.tugasinfiniteadvance.ui.viewmodel.WelcomeViewModel
 @Composable
 fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
     Column (
-        modifier = Modifier
+        modifier =  Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
