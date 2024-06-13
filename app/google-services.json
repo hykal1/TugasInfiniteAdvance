@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "891930575784",
+    "project_id": "tugasinfiniteadvance",
+    "storage_bucket": "tugasinfiniteadvance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891930575784:android:220bdb98354030696fd39d",
+        "android_client_info": {
+          "package_name": "com.example.tugasinfiniteadvance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdjTy01ipqNTzt1VDo6GhvB5-p7CSBQ5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
