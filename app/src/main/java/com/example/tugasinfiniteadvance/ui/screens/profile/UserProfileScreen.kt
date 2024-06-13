@@ -5,6 +5,7 @@ package com.example.tugasinfiniteadvance.ui.screens.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,8 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,12 +61,7 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = viewModel()) {
     val userProfile by viewModel.userProfile.collectAsState()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            /*.padding(20.dp)*/
-            .background(MaterialTheme.colorScheme.background),
-        /*verticalArrangement = Arrangement.Center,*/
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
 
         Text(
@@ -74,105 +72,113 @@ fun UserProfileScreen(viewModel: UserProfileViewModel = viewModel()) {
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight(700),
                 color = Color(0xFF202020)
-                ),
+            ),
             modifier = Modifier
-                .padding(top = 35.dp)
+                .padding(start = 46.dp, top = 55.dp)
         )
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        userProfile?.let {
-            Column(
-                modifier = Modifier.padding(start = 36.dp, top = 16.dp, end = 36.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            userProfile?.let {
+                Column(
+                    modifier = Modifier.padding(start = 36.dp, top = 16.dp, end = 36.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+
+                    Avatar(userProfile.username.first().uppercaseChar())
+
+                    Spacer(modifier = Modifier.height(37.dp))
+
+                    /*UserProfileDisplayField("ID", it.id)*/
+
+                    UserProfileInputField(
+                        label = "Username",
+                        value = it.username,
+                        icon = Icons.Default.Person,
+                        onValueChange = { newValue ->
+                            viewModel.updateUserProfile(it.copy(username = newValue))
+                        }
+                    )
+
+                    UserProfileInputField(
+                        label = "Email",
+                        value = it.email,
+                        icon = Icons.Default.Email,
+                        onValueChange = { newValue ->
+                            viewModel.updateUserProfile(it.copy(email = newValue))
+                        }
+                    )
+
+                    UserProfileInputField(
+                        label = "Password",
+                        value = it.password,
+                        icon = Icons.Default.Lock,
+                        onValueChange = { newValue ->
+                            viewModel.updateUserProfile(it.copy(password = newValue))
+                        },
+                        isPasswordField = true
+                    )
+
+                    UserProfileInputField(
+                        label = "Country",
+                        value = it.country,
+                        icon = Icons.Default.LocationOn,
+                        onValueChange = { newValue ->
+                            viewModel.updateUserProfile(it.copy(country = newValue))
+                        }
+                    )
+
+                    UserProfileInputField(
+                        label = "City",
+                        value = it.city,
+                        icon = Icons.Default.LocationOn,
+                        onValueChange = { newValue ->
+                            viewModel.updateUserProfile(it.copy(city = newValue))
+                        }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD41616)),
+                modifier = Modifier
+                    .width(320.dp)
+                    .height(56.dp)
+                    .background(color = Color(0xFFD41616), shape = RoundedCornerShape(size = 10.dp))
             ) {
-
-
-                Avatar(userProfile.username.first().uppercaseChar())
-
-                Spacer(modifier = Modifier.height(37.dp))
-
-                /*UserProfileDisplayField("ID", it.id)*/
-
-                UserProfileInputField(
-                    label = "Username",
-                    value = it.username,
-                    icon = Icons.Default.Person,
-                    onValueChange = { newValue ->
-                        viewModel.updateUserProfile(it.copy(username = newValue))
-                    }
-                )
-
-                UserProfileInputField(
-                    label = "Email",
-                    value = it.email,
-                    icon = Icons.Default.Email,
-                    onValueChange = { newValue ->
-                        viewModel.updateUserProfile(it.copy(email = newValue))
-                    }
-                )
-
-                UserProfileInputField(
-                    label = "Password",
-                    value = it.password,
-                    icon = Icons.Default.Lock,
-                    onValueChange = { newValue ->
-                        viewModel.updateUserProfile(it.copy(password = newValue))
-                    }
-                )
-
-                UserProfileInputField(
-                    label = "Country",
-                    value = it.country,
-                    icon = Icons.Default.LocationOn,
-                    onValueChange = { newValue ->
-                        viewModel.updateUserProfile(it.copy(country = newValue))
-                    }
-                )
-
-                UserProfileInputField(
-                    label = "City",
-                    value = it.city,
-                    icon = Icons.Default.LocationOn,
-                    onValueChange = { newValue ->
-                        viewModel.updateUserProfile(it.copy(city = newValue))
-                    }
+                Text(
+                    text = "Log Out",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 20.sp,
+                        fontFamily = poppinsFontFamily,
+                        fontWeight = FontWeight(600),
+                        color = Color(0xFFFFFFFF),
+                    )
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-
-            },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD41616)),
-            modifier = Modifier
-                .width(320.dp)
-                .height(56.dp)
-                .background(color = Color(0xFFD41616), shape = RoundedCornerShape(size = 10.dp))
-        ) {
-            Text(
-                text = "Log Out",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF),
-                )
+            Image(
+                painter = painterResource(id = R.drawable.bg_mosque), // Replace with your background image resource
+                contentDescription = "Background Image",
+                modifier = Modifier
+                    .wrapContentHeight()
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
             )
         }
-
-        Image(
-            painter = painterResource(id = R.drawable.bg_mosque), // Replace with your background image resource
-            contentDescription = "Background Image",
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth(),
-            contentScale = ContentScale.Crop
-        )
     }
 }
 
@@ -199,18 +205,30 @@ fun UserProfileInputField(
     label: String,
     value: String,
     icon: ImageVector,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    isPasswordField: Boolean = false
 ) {
     var text by remember { mutableStateOf(value) }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = text,
+        value = if (isPasswordField && !isPasswordVisible) "•".repeat(text.length) else text,
         onValueChange = { newValue ->
             text = newValue
             onValueChange(newValue)
         },
         label = { Text(label) },
         leadingIcon = { Icon(icon, contentDescription = label) },
+        trailingIcon = {
+            if (isPasswordField) {
+                Icon(
+                    imageVector = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                    contentDescription = if (isPasswordVisible) "Hide Password" else "Show Password",
+                    modifier = Modifier
+                        .clickable { isPasswordVisible = !isPasswordVisible }
+                )
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
