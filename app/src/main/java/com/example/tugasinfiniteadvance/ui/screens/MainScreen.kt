@@ -40,7 +40,11 @@ fun MainScreen() {
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "SignUp") {
+            if (currentRoute !in listOf(
+                "SignUp",
+                "SholatNow",
+                "Login"
+            )) {
                 BottomNavigationBar(navController = navController, items = items)
             }
         }

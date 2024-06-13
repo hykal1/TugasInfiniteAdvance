@@ -22,8 +22,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +48,8 @@ import com.example.tugasinfiniteadvance.helper.PrayerTimesViewModelFactory
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.SholatNowViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -52,6 +59,7 @@ import java.util.Locale
 @Composable
 fun SholatNowScreen() {
 
+    val systemUiController = rememberSystemUiController()
     val currentDate = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
     val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
     val viewModel: SholatNowViewModel = viewModel(
@@ -61,6 +69,23 @@ fun SholatNowScreen() {
         )
     )
     val prayerTime by viewModel.prayerTime.observeAsState()
+    var showDialog by remember { mutableStateOf(prayerTime == null) }
+
+    LaunchedEffect(prayerTime) {
+        if (prayerTime == null) {
+            showDialog = true
+        } else {
+            delay(1000)
+            showDialog = false
+        }
+    }
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = false
+        )
+    }
 
     Scaffold(
         modifier = Modifier
@@ -91,7 +116,7 @@ fun SholatNowScreen() {
             )
         }
     ) { _ ->
-        if (prayerTime == null) {
+        if (showDialog) {
             Dialog(
                 onDismissRequest = {  },
                 DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
@@ -106,6 +131,10 @@ fun SholatNowScreen() {
                         modifier = Modifier
                             .align(Alignment.Center)
                     ) {
+                        Text(
+                            text = "Login Berhasil",
+                            fontFamily = poppinsFontFamily,
+                        )
                         Text(
                             text = "Tunggu Sebentar",
                             fontFamily = poppinsFontFamily,

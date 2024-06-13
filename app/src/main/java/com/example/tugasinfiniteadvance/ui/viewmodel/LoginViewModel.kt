@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.tugasinfiniteadvance.data.remote.firebase.authentication.AuthRepository
 import com.example.tugasinfiniteadvance.ui.state.LoginState
 import com.example.tugasinfiniteadvance.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: AuthRepository
 ) : ViewModel() {

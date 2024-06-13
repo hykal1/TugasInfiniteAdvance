@@ -41,6 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
@@ -49,7 +51,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
 
     var username by rememberSaveable { mutableStateOf("") }
@@ -128,6 +131,7 @@ fun SignUpScreen(
             onClick = {
                 scope.launch {
                     viewModel.registerUser(username, email, password)
+                    navController.navigate("SholatNow")
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
@@ -216,6 +220,8 @@ fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String
 @Composable
 private fun SignUpPreview() {
     TugasInfiniteAdvanceTheme {
-        SignUpScreen()
+        SignUpScreen(
+            navController = rememberNavController()
+        )
     }
 }
