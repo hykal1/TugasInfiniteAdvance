@@ -15,11 +15,11 @@ import com.example.tugasinfiniteadvance.ui.screens.welcome.WelcomeScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController = rememberNavController(), @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = "Login") {
+    NavHost(navController = navController, startDestination = "Welcome") {
         composable("SholatNow") { SholatNowScreen() }
         composable("Profile") { Profile() }
         composable("SignUp") { SignUpScreen(navController = navController) }
         composable("Login") { LoginScreen(navController = navController) }
-        composable("Welcome") { WelcomeScreen() }
+        composable("Welcome") { WelcomeScreen(navController = navController) }
     }
 }

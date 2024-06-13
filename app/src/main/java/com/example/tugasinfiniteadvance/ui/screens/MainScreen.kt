@@ -43,7 +43,8 @@ fun MainScreen() {
             if (currentRoute !in listOf(
                 "SignUp",
                 "SholatNow",
-                "Login"
+                "Login",
+                "Welcome"
             )) {
                 BottomNavigationBar(navController = navController, items = items)
             }

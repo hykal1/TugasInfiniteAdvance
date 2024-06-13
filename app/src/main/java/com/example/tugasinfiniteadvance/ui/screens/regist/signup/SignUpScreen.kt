@@ -3,6 +3,7 @@ package com.example.tugasinfiniteadvance.ui.screens.regist.signup
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,6 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
+import com.example.tugasinfiniteadvance.ui.components.AlertSuccessCreateAccount
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.SignUpViewModel
@@ -52,7 +55,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 
     var username by rememberSaveable { mutableStateOf("") }
@@ -62,6 +65,8 @@ fun SignUpScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val state by viewModel.signUpState.collectAsState(initial = null)
+    var showDialog by remember { mutableStateOf(false) }
+    var accountCreated by remember { mutableStateOf(false) }
 
     Column (
         modifier = Modifier
@@ -129,9 +134,13 @@ fun SignUpScreen(
 
         Button(
             onClick = {
-                scope.launch {
-                    viewModel.registerUser(username, email, password)
-                    navController.navigate("SholatNow")
+                if (!accountCreated) {
+                    scope.launch {
+                        viewModel.registerUser(username, email, password)
+                        showDialog = true
+                    }
+                } else {
+                    Toast.makeText(context, "Account already created", Toast.LENGTH_SHORT).show()
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
@@ -178,7 +187,11 @@ fun SignUpScreen(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight(700),
                     color = Color(0xFF365E32),
-                )
+                ),
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate("Login")
+                    }
             )
         }
 
@@ -191,13 +204,22 @@ fun SignUpScreen(
             contentScale = ContentScale.Crop
         )
 
+        if (showDialog) {
+            AlertSuccessCreateAccount(
+                onConfirm = {
+                    showDialog = false
+                }
+            )
+        }
+
         LaunchedEffect(key1 = state) {
             scope.launch {
                 if (state?.isError?.isNotEmpty() == true) {
                     val error = state?.isError
                     Toast.makeText(context, "$error", Toast.LENGTH_SHORT).show()
                 } else if (state?.isSucces?.isNotEmpty() == true) {
-                    Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Sign Up Success Please Login", Toast.LENGTH_SHORT).show()
+                    accountCreated = true
                 }
             }
         }
@@ -221,7 +243,7 @@ fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String
 private fun SignUpPreview() {
     TugasInfiniteAdvanceTheme {
         SignUpScreen(
-            navController = rememberNavController()
+            navController = rememberNavController(),
         )
     }
 }

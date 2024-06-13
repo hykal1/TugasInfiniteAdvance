@@ -3,6 +3,7 @@ package com.example.tugasinfiniteadvance.ui.screens.regist.login
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavHostController,
 ) {
 
     var email by rememberSaveable { mutableStateOf("") }
@@ -201,7 +202,10 @@ fun LoginScreen(
                     fontFamily = poppinsFontFamily,
                     fontWeight = FontWeight(700),
                     color = Color(0xFF365E32)
-                )
+                ),
+                modifier = Modifier.clickable {
+                    navController.navigate("SignUp")
+                }
             )
         }
 
@@ -243,6 +247,6 @@ fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String
 @Composable
 private fun LoginScreenPreview() {
     LoginScreen(
-        navController = rememberNavController()
+        navController = rememberNavController(),
     )
 }

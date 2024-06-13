@@ -28,12 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.WelcomeViewModel
 
 @Composable
-fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
+fun WelcomeScreen(
+    navController: NavHostController
+) {
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -76,7 +80,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
 
         Button(
             onClick = {
-
+                navController.navigate("Login")
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
             modifier = Modifier
@@ -99,7 +103,9 @@ fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(14.dp))
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate("SignUp")
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             modifier = Modifier
                 .width(320.dp)
@@ -133,5 +139,7 @@ fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 private fun WelcomeScreenPreview() {
-    WelcomeScreen()
+    WelcomeScreen(
+        rememberNavController()
+    )
 }
