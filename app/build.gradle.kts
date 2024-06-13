@@ -104,6 +104,8 @@ dependencies {
 
     implementation(libs.accompanist.systemuicontroller)
 
+    implementation(libs.play.services.auth)
+
     /*// Room
     implementation ("androidx.room:room-runtime:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
