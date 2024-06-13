@@ -1,25 +1,34 @@
 package com.example.tugasinfiniteadvance.ui.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.tugasinfiniteadvance.data.remote.firebase.authentication.AuthRepository
+import com.example.tugasinfiniteadvance.ui.state.LoginState
+import com.example.tugasinfiniteadvance.util.Resource
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
-    val emailState = mutableStateOf("")
-    val passwordState = mutableStateOf("")
+class LoginViewModel @Inject constructor(
+    private val repository: AuthRepository
+) : ViewModel() {
 
-    fun onEmailChanged(email: String) {
-        emailState.value = email
+    private val _loginState = Channel<LoginState>()
+    val loginState =  _loginState.receiveAsFlow()
+
+    fun loginUser(email: String, password: String) = viewModelScope.launch {
+        repository.loginUser(email, password).collect { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _loginState.send(LoginState(isSucces = "Sign In Success"))
+                } is Resource.Loading -> {
+                    _loginState.send(LoginState(isLoading = true))
+                } is Resource.Error -> {
+                    _loginState.send(LoginState(isError = result.message))
+                }
+            }
+        }
     }
 
-    fun onPasswordChanged(password: String) {
-        passwordState.value = password
-    }
-
-    fun onLoginClicked() {
-        val email = emailState.value
-        val password = passwordState.value
-
-        // Lakukan validasi email dan password di sini
-        // Panggil repository untuk melakukan proses login
-    }
 }

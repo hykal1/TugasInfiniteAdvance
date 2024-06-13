@@ -39,167 +39,167 @@ import com.example.tugasinfiniteadvance.ui.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            modifier = Modifier.padding(top = 59.dp),
-            text = "Hi, Welcome! \uD83D\uDC4B",
-            style = TextStyle(
-                fontSize = 30.sp,
-                lineHeight = 39.sp,
-                fontFamily = poppinsFontFamily,
-                fontWeight = FontWeight(700),
-                color = Color(0xFF000000)
-            )
-        )
-
-        Spacer(modifier = Modifier.height(70.dp))
-
-        Column(
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.width(320.dp)
-        ) {
-            Text(text = "Email Address")
-
-            CustomOutlinedTextField(
-                value = viewModel.emailState.value,
-                label = "Your Email Address",
-                onValueChange = { viewModel.onEmailChanged(it) }
-            )
-
-            Spacer(modifier = Modifier.height(22.dp))
-
-            Text(text = "Password")
-
-            CustomOutlinedTextField(
-                value = viewModel.passwordState.value,
-                label = "Password",
-                onValueChange = { viewModel.onPasswordChanged(it) }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 15.dp)
-        ) {
-            Text(
-                text = "Forgot password?",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 17.5.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF000000)
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(65.dp))
-
-        Button(
-            onClick = { viewModel.onLoginClicked() },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
-            modifier = Modifier
-                .width(320.dp)
-                .height(56.dp)
-                .background(color = Color(0xFF365E32), shape = RoundedCornerShape(size = 10.dp))
-        ) {
-            Text(
-                text = "Log In",
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight(600),
-                    color = Color(0xFFFFFFFF)
-                )
-            )
-        }
-
-        Spacer(modifier = Modifier.height(38.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Divider(
-                thickness = 1.dp,
-                color = Color.Black,
-                modifier = Modifier
-                    .width(92.dp)
-                    .background(color = Color(0xFFD8DADC))
-                    .padding(end = 20.dp)
-            )
-
-            Text(text = "or Log In with")
-
-            Divider(
-                thickness = 1.dp,
-                color = Color.Black,
-                modifier = Modifier
-                    .width(92.dp)
-                    .background(color = Color(0xFFD8DADC))
-                    .padding(start = 20.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(38.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.google),
-            contentDescription = "google_Icon",
-            modifier = Modifier
-                .width(320.dp)
-                .height(56.dp)
-        )
-
-        Spacer(modifier = Modifier.height(42.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Don’t have an account?",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 17.5.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xB2000000)
-                )
-            )
-
-            Text(
-                text = "Sign Up",
-                style = TextStyle(
-                    fontSize = 14.sp,
-                    lineHeight = 17.5.sp,
-                    fontFamily = poppinsFontFamily,
-                    fontWeight = FontWeight(700),
-                    color = Color(0xFF365E32)
-                )
-            )
-        }
-
-        Image(
-            painter = painterResource(id = R.drawable.bg_mosque), // Replace with your background image resource
-            contentDescription = "Background Image",
-            modifier = Modifier
-                .wrapContentHeight()
-                .fillMaxWidth(),
-            contentScale = ContentScale.Crop
-        )
-    }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        Text(
+//            modifier = Modifier.padding(top = 59.dp),
+//            text = "Hi, Welcome! \uD83D\uDC4B",
+//            style = TextStyle(
+//                fontSize = 30.sp,
+//                lineHeight = 39.sp,
+//                fontFamily = poppinsFontFamily,
+//                fontWeight = FontWeight(700),
+//                color = Color(0xFF000000)
+//            )
+//        )
+//
+//        Spacer(modifier = Modifier.height(70.dp))
+//
+//        Column(
+//            horizontalAlignment = Alignment.Start,
+//            modifier = Modifier.width(320.dp)
+//        ) {
+//            Text(text = "Email Address")
+//
+//            CustomOutlinedTextField(
+//                value = viewModel.emailState.value,
+//                label = "Your Email Address",
+//                onValueChange = { viewModel.onEmailChanged(it) }
+//            )
+//
+//            Spacer(modifier = Modifier.height(22.dp))
+//
+//            Text(text = "Password")
+//
+//            CustomOutlinedTextField(
+//                value = viewModel.passwordState.value,
+//                label = "Password",
+//                onValueChange = { viewModel.onPasswordChanged(it) }
+//            )
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//        }
+//
+//        Column(
+//            horizontalAlignment = Alignment.End,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(end = 15.dp)
+//        ) {
+//            Text(
+//                text = "Forgot password?",
+//                style = TextStyle(
+//                    fontSize = 14.sp,
+//                    lineHeight = 17.5.sp,
+//                    fontFamily = poppinsFontFamily,
+//                    fontWeight = FontWeight(400),
+//                    color = Color(0xFF000000)
+//                )
+//            )
+//        }
+//
+//        Spacer(modifier = Modifier.height(65.dp))
+//
+//        Button(
+//            onClick = { viewModel.onLoginClicked() },
+//            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
+//            modifier = Modifier
+//                .width(320.dp)
+//                .height(56.dp)
+//                .background(color = Color(0xFF365E32), shape = RoundedCornerShape(size = 10.dp))
+//        ) {
+//            Text(
+//                text = "Log In",
+//                style = TextStyle(
+//                    fontSize = 16.sp,
+//                    lineHeight = 20.sp,
+//                    fontFamily = poppinsFontFamily,
+//                    fontWeight = FontWeight(600),
+//                    color = Color(0xFFFFFFFF)
+//                )
+//            )
+//        }
+//
+//        Spacer(modifier = Modifier.height(38.dp))
+//
+//        Row(
+//            horizontalArrangement = Arrangement.Center,
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Divider(
+//                thickness = 1.dp,
+//                color = Color.Black,
+//                modifier = Modifier
+//                    .width(92.dp)
+//                    .background(color = Color(0xFFD8DADC))
+//                    .padding(end = 20.dp)
+//            )
+//
+//            Text(text = "or Log In with")
+//
+//            Divider(
+//                thickness = 1.dp,
+//                color = Color.Black,
+//                modifier = Modifier
+//                    .width(92.dp)
+//                    .background(color = Color(0xFFD8DADC))
+//                    .padding(start = 20.dp)
+//            )
+//        }
+//
+//        Spacer(modifier = Modifier.height(38.dp))
+//
+//        Image(
+//            painter = painterResource(id = R.drawable.google),
+//            contentDescription = "google_Icon",
+//            modifier = Modifier
+//                .width(320.dp)
+//                .height(56.dp)
+//        )
+//
+//        Spacer(modifier = Modifier.height(42.dp))
+//
+//        Row(
+//            horizontalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterHorizontally),
+//            verticalAlignment = Alignment.CenterVertically,
+//            modifier = Modifier.fillMaxWidth()
+//        ) {
+//            Text(
+//                text = "Don’t have an account?",
+//                style = TextStyle(
+//                    fontSize = 14.sp,
+//                    lineHeight = 17.5.sp,
+//                    fontFamily = poppinsFontFamily,
+//                    fontWeight = FontWeight(400),
+//                    color = Color(0xB2000000)
+//                )
+//            )
+//
+//            Text(
+//                text = "Sign Up",
+//                style = TextStyle(
+//                    fontSize = 14.sp,
+//                    lineHeight = 17.5.sp,
+//                    fontFamily = poppinsFontFamily,
+//                    fontWeight = FontWeight(700),
+//                    color = Color(0xFF365E32)
+//                )
+//            )
+//        }
+//
+//        Image(
+//            painter = painterResource(id = R.drawable.bg_mosque), // Replace with your background image resource
+//            contentDescription = "Background Image",
+//            modifier = Modifier
+//                .wrapContentHeight()
+//                .fillMaxWidth(),
+//            contentScale = ContentScale.Crop
+//        )
+//    }
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.example.tugasinfiniteadvance.ui.screens.regist.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +21,18 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +40,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tugasinfiniteadvance.R
+import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.SignUpViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
+fun SignUpScreen(
+    viewModel: SignUpViewModel = hiltViewModel()
+) {
+
+    var username by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var confirmPassword by rememberSaveable { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val state by viewModel.signUpState.collectAsState(initial = null)
+
     Column (
         modifier = Modifier
             .fillMaxSize(),
@@ -64,9 +86,9 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
             Text(text = "Username")
 
             CustomOutlinedTextField(
-                value = viewModel.usernameState.value,
+                value = username,
                 label = "Your Username",
-                onValueChange = { viewModel.onUsernameChanged(it) }
+                onValueChange = { username = it }
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -74,9 +96,9 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
             Text(text = "Email Address")
 
             CustomOutlinedTextField(
-                value = viewModel.emailState.value,
+                value = email,
                 label = "Your Email Address",
-                onValueChange = { viewModel.onEmailChanged(it) }
+                onValueChange = { email = it }
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -84,9 +106,9 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
             Text(text = "Password")
 
             CustomOutlinedTextField(
-                value = viewModel.passwordState.value,
+                value = password,
                 label = "Password",
-                onValueChange = { viewModel.onPasswordChanged(it) }
+                onValueChange = { password = it }
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -94,16 +116,20 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
             Text(text = "Confirm Password")
 
             CustomOutlinedTextField(
-                value = viewModel.confirmPasswordState.value,
+                value = confirmPassword,
                 label = "Confirm Password",
-                onValueChange = { viewModel.onConfirmPasswordChanged(it) }
+                onValueChange = { confirmPassword = it }
             )
         }
 
         Spacer(modifier = Modifier.height(44.dp))
 
         Button(
-            onClick = { viewModel.onSignUpClicked() },
+            onClick = {
+                scope.launch {
+                    viewModel.registerUser(username, email, password)
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
             modifier = Modifier
                 .width(320.dp)
@@ -160,6 +186,17 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
                 .fillMaxWidth(),
             contentScale = ContentScale.Crop
         )
+
+        LaunchedEffect(key1 = state) {
+            scope.launch {
+                if (state?.isError?.isNotEmpty() == true) {
+                    val error = state?.isError
+                    Toast.makeText(context, "$error", Toast.LENGTH_SHORT).show()
+                } else if (state?.isSucces?.isNotEmpty() == true) {
+                    Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
 
@@ -178,5 +215,7 @@ fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String
 @Preview(showBackground = true)
 @Composable
 private fun SignUpPreview() {
-    SignUpScreen()
+    TugasInfiniteAdvanceTheme {
+        SignUpScreen()
+    }
 }
