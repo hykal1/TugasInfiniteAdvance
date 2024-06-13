@@ -360,6 +360,8 @@ fun getNextPrayerTime(jadwal: Jadwal?, currentTime: String): Pair<String, String
                 return prayer
             }
         }
+
+        return "Subuh" to prayerTimes.subuh
     }
     return null
 }
