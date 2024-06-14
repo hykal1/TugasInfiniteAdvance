@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tugasinfiniteadvance.domain.repository.PrayRepository
 import com.example.tugasinfiniteadvance.ui.screens.note.NoteState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NoteViewModel @Inject constructor(private val prayRepository: PrayRepository) : ViewModel() {
+@HiltViewModel
+class NoteViewModel @Inject constructor(
+    private val prayRepository: PrayRepository) : ViewModel() {
     private val _state = MutableStateFlow(NoteState())
     val state = _state.asStateFlow()
 
