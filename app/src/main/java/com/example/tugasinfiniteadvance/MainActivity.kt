@@ -9,6 +9,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.tugasinfiniteadvance.ui.navigation.AppNavGraph
 import com.example.tugasinfiniteadvance.ui.screens.MainScreen
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             TugasInfiniteAdvanceTheme {
-                MainScreen()
+                /*MainScreen()*/
+                AppNavGraph()
             }
         }
     }
