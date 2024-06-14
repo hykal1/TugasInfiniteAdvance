@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.dagger.hilt.android)
+    id("kotlin-kapt")
     alias(libs.plugins.google.devtools.ksp)
     alias(libs.plugins.google.gms.google.services)
 }
@@ -77,6 +78,7 @@ dependencies {
     implementation ("androidx.compose.ui:ui-tooling-preview:1.6.7")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
     implementation ("androidx.activity:activity-compose:1.9.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.5.1")
 
     // ViewModel and LiveData
     implementation (libs.androidx.lifecycle.viewmodel.compose)

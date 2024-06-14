@@ -20,21 +20,19 @@ import com.example.tugasinfiniteadvance.ui.screens.regist.login.LoginScreen
 import com.example.tugasinfiniteadvance.ui.screens.regist.signup.SignUpScreen
 import com.example.tugasinfiniteadvance.ui.screens.welcome.WelcomeScreen
 import com.example.tugasinfiniteadvance.ui.viewmodel.MainViewModel
-
 @Composable
-fun AppNavGraph(navController: NavHostController = rememberNavController(), @SuppressLint("ModifierParameter") modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+fun AppNavGraph(navController: NavHostController = rememberNavController(), modifier: Modifier = Modifier) {
+    
+  val context = LocalContext.current
     val preferences = SettingPreferences.getInstance(context.dataStore)
     val viewModel: MainViewModel = viewModel(
         factory = ViewModelFactory(preferences)
     )
-
-    val isLoggedIn by viewModel.getStatusLogin().observeAsState(initial = false)
-    val startDestination = if (isLoggedIn) "SholatNow" else "Welcome"
-
-    NavHost(navController = navController, startDestination = startDestination) {
+    
+    NavHost(navController = navController, startDestination = "splash", modifier = modifier) {
+        composable("splash") { SplashScreen(navController = navController) }
+        composable("Profile") { UserProfileScreen() }
         composable("SholatNow") { SholatNowScreen() }
-        composable("Profile") { Profile() }
         composable("SignUp") { SignUpScreen(navController = navController) }
         composable("Login") { LoginScreen(navController = navController) }
         composable("Welcome") { WelcomeScreen(navController = navController) }

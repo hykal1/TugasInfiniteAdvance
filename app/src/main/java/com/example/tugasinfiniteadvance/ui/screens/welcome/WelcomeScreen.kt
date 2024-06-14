@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
@@ -36,10 +37,10 @@ import com.example.tugasinfiniteadvance.ui.viewmodel.WelcomeViewModel
 
 @Composable
 fun WelcomeScreen(
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     Column (
-        modifier = Modifier
+        modifier =  Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -50,8 +51,6 @@ fun WelcomeScreen(
                 .width(310.dp)
                 .padding(top = 63.dp)
         )
-
-        /*Spacer(modifier = Modifier.height(67.dp))*/
 
         Text(
             text = "ShalatNow",
@@ -139,7 +138,5 @@ fun WelcomeScreen(
 @Preview(showBackground = true)
 @Composable
 private fun WelcomeScreenPreview() {
-    WelcomeScreen(
-        rememberNavController()
-    )
+    WelcomeScreen(navController = rememberNavController())
 }
