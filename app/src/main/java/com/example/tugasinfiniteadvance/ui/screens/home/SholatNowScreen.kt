@@ -22,14 +22,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +48,7 @@ import com.example.tugasinfiniteadvance.helper.PrayerTimesViewModelFactory
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.SholatNowViewModel
+import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -53,7 +59,6 @@ import java.util.Locale
 fun SholatNowScreen() {
 
     val currentDate = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
-    val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
     val viewModel: SholatNowViewModel = viewModel(
         factory = PrayerTimesViewModelFactory(
             kota = "0506",
@@ -61,6 +66,21 @@ fun SholatNowScreen() {
         )
     )
     val prayerTime by viewModel.prayerTime.observeAsState()
+    val context = LocalContext.current
+    var currentTime by remember { mutableStateOf(getCurrentTime()) }
+    var countdown by remember { mutableStateOf("N/A") }
+
+    // Update currentTime every second
+    LaunchedEffect(Unit) {
+        while (true) {
+            currentTime = getCurrentTime()
+            countdown = prayerTime?.data?.jadwal?.let { jadwal ->
+                val nextPrayer = getNextPrayerTime(jadwal, currentTime)
+                nextPrayer?.second?.let { getTimeDifference(currentTime, it) } ?: "N/A"
+            } ?: "N/A"
+            delay(1000)
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -120,6 +140,17 @@ fun SholatNowScreen() {
                 }
             }
         } else {
+
+            LaunchedEffect(prayerTime) {
+                prayerTime?.data?.jadwal?.let { jadwal ->
+                    viewModel.schedulePrayerAlarm(context, "Subuh", jadwal.subuh)
+                    viewModel.schedulePrayerAlarm(context, "Dzuhur", jadwal.dzuhur)
+                    viewModel.schedulePrayerAlarm(context, "Ashar", jadwal.ashar)
+                    viewModel.schedulePrayerAlarm(context, "Maghrib", jadwal.maghrib)
+                    viewModel.schedulePrayerAlarm(context, "Isya", jadwal.isya)
+                }
+            }
+
             Column {
                 Box(modifier = Modifier.wrapContentHeight()) {
                     Box {
@@ -342,17 +373,22 @@ fun SholatNowScreen() {
                 }
             }
         }
-        }
+    }
+
+}
+
+fun getCurrentTime(): String {
+    return SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
 }
 
 fun getNextPrayerTime(jadwal: Jadwal?, currentTime: String): Pair<String, String>? {
     jadwal?.let { prayerTimes ->
         val prayerTimesList = listOf(
-            "Subuh" to prayerTimes.subuh,
-            "Dzuhur" to prayerTimes.dzuhur,
-            "Ashar" to prayerTimes.ashar,
-            "Maghrib" to prayerTimes.maghrib,
-            "Isya" to prayerTimes.isya
+            "Subuh Pukul" to prayerTimes.subuh,
+            "Dzuhur Pukul" to prayerTimes.dzuhur,
+            "Ashar Pukul" to prayerTimes.ashar,
+            "Maghrib Pukul" to prayerTimes.maghrib,
+            "Isya Pukul" to prayerTimes.isya
         )
 
         for (prayer in prayerTimesList) {
@@ -361,11 +397,10 @@ fun getNextPrayerTime(jadwal: Jadwal?, currentTime: String): Pair<String, String
             }
         }
 
-        return "Subuh" to prayerTimes.subuh
+        return "Subuh Pukul" to prayerTimes.subuh
     }
     return null
 }
-
 
 fun getTimeDifference(currentTime: String, nextPrayerTime: String?): String {
     nextPrayerTime?.let {
@@ -374,29 +409,31 @@ fun getTimeDifference(currentTime: String, nextPrayerTime: String?): String {
         }
 
         val currentHour = currentTime.substringBefore(":").toInt()
-        val currentMinute = currentTime.substringAfter(":").toInt()
+        val currentMinute = currentTime.substringAfter(":").substringBefore(":").toInt()
+        val currentSecond = currentTime.substringAfterLast(":").toInt()
 
         val nextHour = it.substringBefore(":").toInt()
-        val nextMinute = it.substringAfter(":").toInt()
+        val nextMinute = it.substringAfter(":").substringBefore(":").toInt()
+        val nextSecond = it.substringAfterLast(":").toInt()
 
-        val currentTotalMinutes = currentHour * 60 + currentMinute
-        val nextTotalMinutes = nextHour * 60 + nextMinute
+        val currentTotalSeconds = currentHour * 3600 + currentMinute * 60 + currentSecond
+        val nextTotalSeconds = nextHour * 3600 + nextMinute * 60 + nextSecond
 
-        var difference = nextTotalMinutes - currentTotalMinutes
+        var difference = nextTotalSeconds - currentTotalSeconds
 
         if (difference < 0) {
-            difference += 24 * 60
+            difference += 24 * 3600
         }
 
-        val hours = difference / 60
-        val minutes = difference % 60
+        val hours = difference / 3600
+        val minutes = (difference % 3600) / 60
+        val seconds = difference % 60
 
-        return "$hours jam $minutes menit lagi"
+        return "$hours jam $minutes menit $seconds detik lagi"
+        //return String.format("%02d:%02d:%02d lagi", hours, minutes, seconds)
     }
     return "N/A"
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
