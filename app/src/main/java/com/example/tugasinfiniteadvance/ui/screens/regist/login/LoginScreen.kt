@@ -24,6 +24,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -43,6 +45,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,6 +88,13 @@ fun LoginScreen(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val state by viewModel.loginState.collectAsState(initial = null)
+    var passwordVisibility by remember { mutableStateOf(false) }
+
+
+    val icon = if (passwordVisibility)
+        painterResource(R.drawable.ic_visibility)
+    else
+        painterResource(R.drawable.ic_visibility_off)
 
     Column(
         modifier = Modifier
@@ -112,10 +123,10 @@ fun LoginScreen(
 
             CustomOutlinedTextField(
                 value = email,
-                label = "Your Email Address",
                 onValueChange = {
                     email = it
-                }
+                },
+                trailingIcon = {}
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -124,10 +135,20 @@ fun LoginScreen(
 
             CustomOutlinedTextField(
                 value = password,
-                label = "Password",
                 onValueChange = {
                     password = it
-                }
+                },
+                trailingIcon = {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            passwordVisibility = !passwordVisibility
+                        }
+                    )
+                },
+                visualTransformation = if (passwordVisibility) VisualTransformation.None
+                else PasswordVisualTransformation(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -138,8 +159,10 @@ fun LoginScreen(
         Button(
             onClick = {
                 scope.launch {
-                    viewModel.loginUser(email, password)
-                    navController.navigate("SholatNow")
+                    viewModel.loginUser(
+                        email.trim(),
+                        password.trim()
+                    )
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
@@ -257,6 +280,7 @@ fun LoginScreen(
                     Toast.makeText(context, "$error", Toast.LENGTH_SHORT).show()
                 } else if (state?.isSucces?.isNotEmpty() == true) {
                     Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
+                    navController.navigate("SholatNow")
                 }
             }
         }
@@ -265,6 +289,7 @@ fun LoginScreen(
             scope.launch {
                 if (googleLoginState.success != null){
                     Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
+                    navController.navigate("SholatNow")
                 }
             }
         }
@@ -272,14 +297,22 @@ fun LoginScreen(
 }
 
 @Composable
-fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String) -> Unit) {
+fun CustomOutlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    trailingIcon: @Composable () -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = label) },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { /* Handle action done if needed */ }),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        trailingIcon = {
+            trailingIcon()
+        },
+        visualTransformation = visualTransformation
     )
 }
 
