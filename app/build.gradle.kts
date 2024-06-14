@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -62,6 +63,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -101,6 +103,11 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+
+    implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.play.services.auth)
+
     /*// Room
     implementation ("androidx.room:room-runtime:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
@@ -135,4 +142,6 @@ dependencies {
 
     // Navigation
     implementation "androidx.navigation:navigation-compose:2.7.3"*/
+
+    implementation(libs.androidx.datastore.preferences)
 }

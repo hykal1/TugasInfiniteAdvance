@@ -12,12 +12,15 @@ import androidx.activity.enableEdgeToEdge
 import com.example.tugasinfiniteadvance.ui.navigation.AppNavGraph
 import com.example.tugasinfiniteadvance.ui.screens.MainScreen
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(
+            statusBarStyle = SystemBarStyle.light(
+                android.graphics.Color.TRANSPARENT,
                 android.graphics.Color.TRANSPARENT
             )
         )

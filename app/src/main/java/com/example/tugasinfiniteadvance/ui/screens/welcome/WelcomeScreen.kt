@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
@@ -36,8 +37,7 @@ import com.example.tugasinfiniteadvance.ui.viewmodel.WelcomeViewModel
 
 @Composable
 fun WelcomeScreen(
-    navController: NavController,
-    viewModel: WelcomeViewModel = viewModel()
+    navController: NavHostController,
 ) {
     Column (
         modifier =  Modifier
@@ -51,8 +51,6 @@ fun WelcomeScreen(
                 .width(310.dp)
                 .padding(top = 63.dp)
         )
-
-        /*Spacer(modifier = Modifier.height(67.dp))*/
 
         Text(
             text = "ShalatNow",
@@ -81,7 +79,7 @@ fun WelcomeScreen(
 
         Button(
             onClick = {
-
+                navController.navigate("Login")
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF365E32)),
             modifier = Modifier
@@ -104,7 +102,9 @@ fun WelcomeScreen(
         Spacer(modifier = Modifier.height(14.dp))
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                navController.navigate("SignUp")
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             modifier = Modifier
                 .width(320.dp)

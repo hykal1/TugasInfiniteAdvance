@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +49,7 @@ import com.example.tugasinfiniteadvance.helper.PrayerTimesViewModelFactory
 import com.example.tugasinfiniteadvance.ui.theme.TugasInfiniteAdvanceTheme
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.SholatNowViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -58,6 +60,7 @@ import java.util.Locale
 @Composable
 fun SholatNowScreen() {
 
+    val systemUiController = rememberSystemUiController()
     val currentDate = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
     val viewModel: SholatNowViewModel = viewModel(
         factory = PrayerTimesViewModelFactory(
@@ -66,6 +69,24 @@ fun SholatNowScreen() {
         )
     )
     val prayerTime by viewModel.prayerTime.observeAsState()
+    var showDialog by remember { mutableStateOf(prayerTime == null) }
+
+    LaunchedEffect(prayerTime) {
+        if (prayerTime == null) {
+            showDialog = true
+        } else {
+            delay(1000)
+            showDialog = false
+        }
+    }
+
+    SideEffect {
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = false
+        )
+    }
+    
     val context = LocalContext.current
     var currentTime by remember { mutableStateOf(getCurrentTime()) }
     var countdown by remember { mutableStateOf("N/A") }
@@ -111,7 +132,7 @@ fun SholatNowScreen() {
             )
         }
     ) { _ ->
-        if (prayerTime == null) {
+        if (showDialog) {
             Dialog(
                 onDismissRequest = {  },
                 DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
@@ -126,6 +147,10 @@ fun SholatNowScreen() {
                         modifier = Modifier
                             .align(Alignment.Center)
                     ) {
+                        Text(
+                            text = "Login Berhasil",
+                            fontFamily = poppinsFontFamily,
+                        )
                         Text(
                             text = "Tunggu Sebentar",
                             fontFamily = poppinsFontFamily,
@@ -396,7 +421,6 @@ fun getNextPrayerTime(jadwal: Jadwal?, currentTime: String): Pair<String, String
                 return prayer
             }
         }
-
         return "Subuh Pukul" to prayerTimes.subuh
     }
     return null
