@@ -51,12 +51,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
+import com.example.tugasinfiniteadvance.SettingPreferences
 import com.example.tugasinfiniteadvance.data.remote.firebase.authentication.Constant.ServerClient
+import com.example.tugasinfiniteadvance.dataStore
+import com.example.tugasinfiniteadvance.helper.ViewModelFactory
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.LoginViewModel
+import com.example.tugasinfiniteadvance.ui.viewmodel.MainViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -68,6 +73,13 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
+    val context = LocalContext.current
+
+
+    val preferences = SettingPreferences.getInstance(context.dataStore)
+    val viewModel2: MainViewModel = viewModel(
+        factory = ViewModelFactory(preferences)
+    )
 
     val googleLoginState = viewModel.googleState.value
 
@@ -86,10 +98,8 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val state by viewModel.loginState.collectAsState(initial = null)
     var passwordVisibility by remember { mutableStateOf(false) }
-
 
     val icon = if (passwordVisibility)
         painterResource(R.drawable.ic_visibility)
@@ -280,7 +290,10 @@ fun LoginScreen(
                     Toast.makeText(context, "$error", Toast.LENGTH_SHORT).show()
                 } else if (state?.isSucces?.isNotEmpty() == true) {
                     Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
-                    navController.navigate("SholatNow")
+                    viewModel2.saveLoginStatus(true)
+                    navController.navigate("SholatNow") {
+                        popUpTo("Login") { inclusive = true }
+                    }
                 }
             }
         }
@@ -289,7 +302,10 @@ fun LoginScreen(
             scope.launch {
                 if (googleLoginState.success != null){
                     Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
-                    navController.navigate("SholatNow")
+                    viewModel2.saveLoginStatus(true)
+                    navController.navigate("SholatNow") {
+                        popUpTo("Login") { inclusive = true }
+                    }
                 }
             }
         }

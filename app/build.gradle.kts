@@ -140,4 +140,6 @@ dependencies {
 
     // Navigation
     implementation "androidx.navigation:navigation-compose:2.7.3"*/
+
+    implementation(libs.androidx.datastore.preferences)
 }
