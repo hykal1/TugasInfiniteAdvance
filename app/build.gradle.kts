@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
     id("kotlin-kapt")
     alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,6 +103,12 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
 
     /*// Room
     implementation ("androidx.room:room-runtime:2.5.2")

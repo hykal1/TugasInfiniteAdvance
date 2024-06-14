@@ -8,8 +8,12 @@ import androidx.room.PrimaryKey
 data class PrayEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "pray_id")
-    var id: Int,
+    var id: Int? = null,
 
     @ColumnInfo(name = "pray_name")
     var prayName: String,
+
+
+    @ColumnInfo(name = " pray_description")
+    var prayDescription: String
 )

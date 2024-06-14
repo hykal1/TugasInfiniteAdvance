@@ -3,7 +3,7 @@ package com.example.tugasinfiniteadvance.dependencyinjection
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
-import com.example.tugasinfiniteadvance.data.dao.PrayDatabase
+import com.example.tugasinfiniteadvance.data.room.dao.PrayDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

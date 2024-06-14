@@ -1,4 +1,4 @@
-package com.example.tugasinfiniteadvance.data.dao
+package com.example.tugasinfiniteadvance.data.room.dao
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

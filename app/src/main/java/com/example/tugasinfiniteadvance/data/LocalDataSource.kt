@@ -1,7 +1,7 @@
 package com.example.tugasinfiniteadvance.data
 
 import com.example.tugasinfiniteadvance.data.Entity.PrayEntity
-import com.example.tugasinfiniteadvance.data.dao.PrayDao
+import com.example.tugasinfiniteadvance.data.room.dao.PrayDao
 import javax.inject.Inject
 import javax.inject.Singleton
 

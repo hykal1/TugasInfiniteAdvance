@@ -2,7 +2,7 @@ package com.example.tugasinfiniteadvance.data.repository
 
 import com.example.tugasinfiniteadvance.data.Entity.PrayEntity
 import com.example.tugasinfiniteadvance.data.LocalDataSource
-import com.example.tugasinfiniteadvance.data.dao.PrayDao
+import com.example.tugasinfiniteadvance.data.room.dao.PrayDao
 import com.example.tugasinfiniteadvance.domain.repository.PrayRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
