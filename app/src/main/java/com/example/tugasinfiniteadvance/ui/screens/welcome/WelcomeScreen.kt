@@ -28,12 +28,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.WelcomeViewModel
 
 @Composable
-fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
+fun WelcomeScreen(
+    navController: NavController,
+    viewModel: WelcomeViewModel = viewModel()
+) {
     Column (
         modifier =  Modifier
             .fillMaxSize(),
@@ -133,5 +138,5 @@ fun WelcomeScreen(viewModel: WelcomeViewModel = viewModel()) {
 @Preview(showBackground = true)
 @Composable
 private fun WelcomeScreenPreview() {
-    WelcomeScreen()
+    WelcomeScreen(navController = rememberNavController())
 }
