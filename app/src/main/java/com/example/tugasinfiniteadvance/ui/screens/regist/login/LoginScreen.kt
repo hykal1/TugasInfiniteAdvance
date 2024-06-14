@@ -1,6 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.tugasinfiniteadvance.ui.screens.regist.login
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +34,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,8 +50,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.tugasinfiniteadvance.R
+import com.example.tugasinfiniteadvance.data.remote.firebase.authentication.Constant.ServerClient
 import com.example.tugasinfiniteadvance.ui.theme.poppinsFontFamily
 import com.example.tugasinfiniteadvance.ui.viewmodel.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,6 +64,20 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
+
+    val googleLoginState = viewModel.googleState.value
+
+    val launcher = 
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credential = GoogleAuthProvider.getCredential(result.idToken, null)
+                viewModel.googleLogin(credential)
+            } catch ( it : Exception){
+                print(it)
+            }
+        }
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -174,6 +196,16 @@ fun LoginScreen(
             modifier = Modifier
                 .width(320.dp)
                 .height(56.dp)
+                .clickable {
+                    val gso = GoogleSignInOptions
+                        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestEmail()
+                        .requestIdToken(ServerClient)
+                        .build()
+                    val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+                    launcher.launch(googleSignInClient.signInIntent)
+                }
         )
 
         Spacer(modifier = Modifier.height(42.dp))
@@ -224,6 +256,14 @@ fun LoginScreen(
                     val error = state?.isError
                     Toast.makeText(context, "$error", Toast.LENGTH_SHORT).show()
                 } else if (state?.isSucces?.isNotEmpty() == true) {
+                    Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        LaunchedEffect(key1 = googleLoginState.success) {
+            scope.launch {
+                if (googleLoginState.success != null){
                     Toast.makeText(context, "Sign In Success", Toast.LENGTH_SHORT).show()
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.tugasinfiniteadvance.ui.screens.regist.signup
 
+import android.graphics.drawable.Icon
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,8 +18,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,10 +40,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,10 +62,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    viewModel: SignUpViewModel = hiltViewModel(),
     navController: NavHostController,
 ) {
-
+    val viewModel: SignUpViewModel = hiltViewModel()
     var username by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -67,6 +74,22 @@ fun SignUpScreen(
     val state by viewModel.signUpState.collectAsState(initial = null)
     var showDialog by remember { mutableStateOf(false) }
     var accountCreated by remember { mutableStateOf(false) }
+    var passwordVisibility by remember { mutableStateOf(false) }
+    var confirmPasswordVisibility by remember { mutableStateOf(false) }
+    var passwordError by remember { mutableStateOf(false) }
+    var confirmPasswordError by remember { mutableStateOf(false) }
+
+    val icon = if (passwordVisibility)
+        painterResource(R.drawable.ic_visibility)
+    else
+        painterResource(R.drawable.ic_visibility_off)
+
+    val icon2 = if (confirmPasswordVisibility)
+        painterResource(R.drawable.ic_visibility)
+    else
+        painterResource(R.drawable.ic_visibility_off)
+
+
 
     Column (
         modifier = Modifier
@@ -95,8 +118,10 @@ fun SignUpScreen(
 
             CustomOutlinedTextField(
                 value = username,
-                label = "Your Username",
-                onValueChange = { username = it }
+                onValueChange = { username = it },
+                trailingIcon = {},
+                isError = false,
+                errorMessage = ""
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -105,8 +130,10 @@ fun SignUpScreen(
 
             CustomOutlinedTextField(
                 value = email,
-                label = "Your Email Address",
-                onValueChange = { email = it }
+                onValueChange = { email = it },
+                trailingIcon = {},
+                isError = false,
+                errorMessage = ""
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -115,8 +142,24 @@ fun SignUpScreen(
 
             CustomOutlinedTextField(
                 value = password,
-                label = "Password",
-                onValueChange = { password = it }
+                onValueChange = {
+                    password = it
+                    passwordError = false
+                },
+                trailingIcon = {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                passwordVisibility = !passwordVisibility
+                            }
+                    )
+                },
+                visualTransformation = if (passwordVisibility) VisualTransformation.None
+                            else PasswordVisualTransformation(),
+                isError = passwordError,
+                errorMessage = "Password do not match"
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -125,8 +168,24 @@ fun SignUpScreen(
 
             CustomOutlinedTextField(
                 value = confirmPassword,
-                label = "Confirm Password",
-                onValueChange = { confirmPassword = it }
+                onValueChange = {
+                    confirmPassword = it
+                    confirmPasswordError = false
+                },
+                trailingIcon = {
+                    Icon(
+                        painter = icon2,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                confirmPasswordVisibility = !confirmPasswordVisibility
+                            }
+                    )
+                },
+                visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None
+                else PasswordVisualTransformation(),
+                isError = confirmPasswordError,
+                errorMessage = "Password do not match"
             )
         }
 
@@ -135,11 +194,25 @@ fun SignUpScreen(
         Button(
             onClick = {
                 if (!accountCreated) {
-                    scope.launch {
-                        viewModel.registerUser(username, email, password)
-                        showDialog = true
+                    if (password != confirmPassword) {
+                        passwordError = true
+                        confirmPasswordError = true
+                    } else {
+                        if (username.isNotBlank() && email.isNotBlank() && password.isNotBlank() && confirmPassword.isNotBlank()) {
+                            scope.launch {
+                                viewModel.registerUser(
+                                    username.trim()
+                                    , email.trim()
+                                    , password.trim()
+                                )
+                            }
+                            showDialog = true
+                        } else {
+                            showDialog = false
+                        }
                     }
                 } else {
+                    showDialog = false
                     Toast.makeText(context, "Account already created", Toast.LENGTH_SHORT).show()
                 }
             },
@@ -227,14 +300,38 @@ fun SignUpScreen(
 }
 
 @Composable
-fun CustomOutlinedTextField(value: String, label: String, onValueChange: (String) -> Unit) {
+fun CustomOutlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    trailingIcon: @Composable () -> Unit,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isError: Boolean,
+    errorMessage: String
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text(text = label) },
+        label = { },
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = { /* Handle action done if needed */ }),
-        modifier = Modifier.fillMaxWidth()
+        keyboardActions = KeyboardActions(onDone = {
+            keyboardController?.hide()
+        }),
+        modifier = Modifier.fillMaxWidth(),
+        trailingIcon = {
+            trailingIcon()
+        },
+        visualTransformation = visualTransformation,
+        isError = isError,
+        supportingText = {
+            if (isError) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
     )
 }
 
